@@ -13,10 +13,13 @@ Allows you to easily retrieve your data from CouchDB/PouchDB views.
 
 Define the query options in your collection definition.
 `opts` can be an object or a function which returns an object.
+You also need to provide a PouchDB instance to your collection.
+
 ```javascript
 var PouchBase = require('backbone-pouch-collection')
 
 var Collection = PouchBase.extend({
+  db: new Pouchdb('foo'),
   opts: {
     view: 'your/viewname',
     params: {
