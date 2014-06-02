@@ -1,0 +1,30 @@
+{
+  "name": "backbone-pouch-collection",
+  "version": "0.1.0",
+  "description": "Backbone Collections with PouchDB as the data source",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec",
+    "build": "browserify index.js -s backbone-pouch-collection > backbone-pouch-collection.js && npm run minify",
+    "minify": "uglifyjs backbone-pouch-collection.js -mc > backbone-pouch-collection.min.js"
+  },
+  "keywords": [
+    "pouchdb",
+    "couchdb",
+    "backbone",
+    "collection"
+  ],
+  "author": "Clemens Stolle",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^4.1.6",
+    "mocha": "^1.20.0",
+    "uglify-js": "^2.4.13",
+    "watchify": "^0.10.2"
+  },
+  "dependencies": {
+    "backbone": "^1.1.2",
+    "pouchdb": "^2.2.3",
+    "underscore": "^1.6.0"
+  }
+}
