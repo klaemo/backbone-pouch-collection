@@ -154,5 +154,34 @@ describe('pouch-base-collection', function() {
       })
       assert(promise)
     })
+
+    it('should work with _all_docs', function (done) {
+      var Child = PouchBase.extend({
+        opts: function () {
+          return {
+            view: '_all_docs',
+            params: { include_docs: true }
+          }
+        }
+      })
+
+      var child = new Child()
+      child.db = this.db
+
+      var promise = child.fetch({
+        success: function (collection, res, opts) {
+          assert(opts)
+          assert(opts.couch, 'should have couch options')
+          assert.equal(collection.length, 5)
+          assert.equal(res.rows.length, 5)
+          assert(opts.couch.include_docs, 'should have specified params')
+          
+          done()
+        },
+        error: function (err) { done(err) }
+      })
+      assert(promise)
+
+    })
   })
 })

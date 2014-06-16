@@ -7,15 +7,22 @@ module.exports = Backbone.Collection.extend({
 
   sync: function (method, collection, options) {
     var promise
+
+    function cb (err, res) {
+      if (err) return options.error(err)
+      options.success(res)
+    }
     
     if (method === 'read') {
       var opts = typeof this.opts == 'function' ? this.opts() : this.opts
       _.defaults(options.couch || (options.couch = {}), opts.params)
 
-      promise = this.db.query(opts.view, options.couch, function (err, res) {
-        if (err) return options.error(err)
-        options.success(res)
-      })
+      if (opts.view === '_all_docs') {
+        promise = this.db.allDocs(options.couch, cb)
+      } else {
+        promise = this.db.query(opts.view, options.couch, cb)
+      }
+
       collection.trigger('request', this, promise, options)
     }
 

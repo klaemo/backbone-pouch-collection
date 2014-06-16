@@ -31,6 +31,8 @@ var Collection = PouchBase.extend({
 })
 ```
 
+`opts.view` can also be `_all_docs` to query...well... `_all_docs`.
+
 You can also pass options to `collection.fetch()` to override the
 default.
 
@@ -46,6 +48,7 @@ collection.fetch({
 ## TODO
 
 * provide standalone builds
+* documentation
 
 ## Development
 To run the unit tests:
