@@ -202,5 +202,30 @@ describe('pouch-base-collection', function() {
       })
       assert(promise)
     })
+
+    it('include_docs', function (done) {
+      var child = new PouchBase()
+      child.db = this.db
+      child.opts = {
+        params: {
+          startkey: '_design/',
+          endkey: '_design/\ufff0'
+        }
+      }
+
+      var promise = child.fetch({
+        success: function (collection, res, opts) {
+          assert(opts)
+          assert(opts.couch, 'should have couch options')
+          assert.equal(collection.length, 1)
+          assert.equal(res.rows.length, 1)
+          assert(opts.couch.include_docs, 'include_docs should be default')
+
+          done()
+        },
+        error: function (err) { done(err) }
+      })
+      assert(promise)
+    })
   })
 })
