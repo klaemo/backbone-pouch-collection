@@ -5,8 +5,8 @@ var PouchBase = require('../')
 describe('pouch-base-collection', function() {
   before(function (done) {
     this.plan = function plan (cnt, cb) {
-      return function () {
-        if (--cnt === 0) cb()
+      return function (err) {
+        if (--cnt === 0) cb(err)
       }
     }
 
@@ -79,10 +79,14 @@ describe('pouch-base-collection', function() {
     it('should take "opts" function', function (done) {
       var cb = this.plan(2, done)
       var Child = PouchBase.extend({
+        viewName: 'app/byType',
         opts: function () {
           return {
-            view: 'app/byType',
-            params: { include_docs: true }
+            view: this.viewName,
+            params: {
+              key: 'foo',
+              include_docs: true
+            }
           }
         }
       })
@@ -94,17 +98,18 @@ describe('pouch-base-collection', function() {
         coll.off('request')
         assert(opts)
         assert(opts.couch, 'should have couch options')
-        assert.equal(opts.couch.limit, 2)
         assert(opts.couch.include_docs, 'should have specified params')
         assert(promise)
         cb()
       })
 
-      var promise = child.sync('read', child, {
-        couch: { limit: 2 },
-        success: function (res) { cb() },
-        error: function (err) { console.error(err) }
+      child.on('sync', function (coll, res, opts) {
+        coll.off('sync')
+        assert.strictEqual(coll.length, 3)
+        cb()
       })
+
+      var promise = child.fetch()
       assert(promise)
 
     })

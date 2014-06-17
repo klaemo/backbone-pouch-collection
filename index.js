@@ -15,7 +15,7 @@ module.exports = Backbone.Collection.extend({
     
     if (method === 'read') {
       var opts = this.opts || {}
-      opts = typeof opts == 'function' ? opts() : opts
+      opts = typeof opts == 'function' ? opts.call(this) : opts
       
       _.defaults(options.couch || (options.couch = {}), opts.params, {
         include_docs: true
