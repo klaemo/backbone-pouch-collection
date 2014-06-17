@@ -14,10 +14,15 @@ module.exports = Backbone.Collection.extend({
     }
     
     if (method === 'read') {
-      var opts = typeof this.opts == 'function' ? this.opts() : this.opts
-      _.defaults(options.couch || (options.couch = {}), opts.params)
+      var opts = this.opts || {}
+      opts = typeof opts == 'function' ? opts() : opts
+      
+      _.defaults(options.couch || (options.couch = {}), opts.params, {
+        include_docs: true
+      })
 
-      if (opts.view === '_all_docs') {
+      // default to '_all_docs' if view isn't specified
+      if (opts.view === '_all_docs' || !opts.view) {
         promise = this.db.allDocs(options.couch, cb)
       } else {
         promise = this.db.query(opts.view, options.couch, cb)
@@ -35,9 +40,10 @@ module.exports = Backbone.Collection.extend({
   parse: function (res, options) {
     options = options || {}
     
-    if (options.couch && options.couch.include_docs)
+    if (options.couch && options.couch.include_docs) {
       return res.rows.map(function (row) { return row.doc })
-    else
+    } else {
       return res
+    }
   }
 })
